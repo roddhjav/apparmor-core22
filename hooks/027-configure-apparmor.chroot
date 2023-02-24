@@ -1,0 +1,14 @@
+#! /bin/sh -ex
+
+set -eux
+
+# Speed up AppArmor loading
+cat << 'EOF' > /etc/apparmor/parser.conf
+write-cache
+cache-loc /etc/apparmor/earlypolicy/
+Optimize=compress-fast
+EOF
+
+# Precompile all profiles
+apparmor_parser --write-cache --skip-read-cache --skip-kernel-load /etc/apparmor.d
+# Cache read/write disabled: interface file missing. (Kernel needs AppArmor 2.4 compatibility patch.)

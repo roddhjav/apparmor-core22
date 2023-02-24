@@ -1,9 +1,13 @@
 name: core22
 # version: "22"
 adopt-info: bootstrap
-summary: Runtime environment based on Ubuntu 22.04
+summary: Runtime environment based on Ubuntu 22.04 with apparmor.d
 description: |
   The base snap based on the Ubuntu 22.04 release.
+  It includes [apparmor.d](https://apparmor.pujol.io/) for full confinement of
+  core and non snap software in Ubuntu Core.
+
+  See https://apparmor.pujol.io/install/#ubuntu-core
 confinement: strict
 type: base
 build-base: core22
@@ -38,6 +42,24 @@ parts:
     source-type: git
     # following branch server/jammy
     source-commit: abc053508fa27656f1016e32585077ef567ad591
+    override-pull: |
+      "${CRAFT_PROJECT_DIR}/build-package.sh" pull
+    override-build: |
+      "${CRAFT_PROJECT_DIR}/build-package.sh" build
+    override-stage: |
+      "${CRAFT_PROJECT_DIR}/build-package.sh" stage
+    prime:
+      - -local-debs
+
+  apparmord:
+    build-packages:
+      - apt-utils
+      - devscripts
+    build-environment:
+      - DIST: core
+    plugin: nil
+    source: https://github.com/roddhjav/apparmor.d.git
+    source-type: git
     override-pull: |
       "${CRAFT_PROJECT_DIR}/build-package.sh" pull
     override-build: |
@@ -82,6 +104,7 @@ parts:
       ubuntu-core: usr/share/plymouth/themes/ubuntu-core
   bootstrap:
     after:
+      - apparmord
       - probert-deb
       - consoleconf-deb
       - base

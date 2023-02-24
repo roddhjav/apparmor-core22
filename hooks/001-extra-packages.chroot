@@ -121,6 +121,7 @@ PACKAGES=(
 
 # Locally built packages
 PACKAGES+=(
+    apparmor.d
     console-conf
     probert-common
     probert-network
