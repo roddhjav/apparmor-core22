@@ -1,4 +1,4 @@
-name: core22
+name: apparmor-core22
 # version: "22"
 adopt-info: bootstrap
 summary: Runtime environment based on Ubuntu 22.04 with apparmor.d
